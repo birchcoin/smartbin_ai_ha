@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Setup SmartBin AI",
+        "description": "Enter your Z.AI API configuration",
+        "data": {
+          "api_key": "API Key",
+          "api_url": "API URL",
+          "model": "Vision Model"
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "Invalid API key"
+    }
+  },
+  "services": {
+    "analyze_image": {
+      "name": "Analyze Bin Image",
+      "description": "Analyze an image using AI to identify items"
+    },
+    "append_image": {
+      "name": "Append Image",
+      "description": "Add an image to bin's image list"
+    },
+    "remove_item": {
+      "name": "Remove Item",
+      "description": "Remove an item from bin inventory"
+    },
+    "update_item": {
+      "name": "Update Item",
+      "description": "Update an existing inventory item"
+    },
+    "add_item": {
+      "name": "Add Item",
+      "description": "Add a new item to inventory manually"
+    },
+    "clear_inventory": {
+      "name": "Clear Inventory",
+      "description": "Remove all items from bin inventory"
+    },
+    "search_items": {
+      "name": "Search Items",
+      "description": "Search for items across all bins"
+    }
+  }
+}

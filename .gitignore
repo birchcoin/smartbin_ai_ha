@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/
+
+# Project specific
+*.log
+temp/
+
+# Development/temporary documentation files
+*_STATUS.md
+*_COMPLETE.md
+*_FIX.md
+*_SUMMARY.md
+REPOSITORY_READY.md
+HACS_SETUP.md
+README_REPO.md
+
+# Temporary fix scripts
+fix_syntax.py
+manual_fix.py
+
+# Environment variables (security)
+.env
+.env.local
+.env.*.local
+
+# Secrets and sensitive data
+secrets.yaml
+secrets.yml
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
