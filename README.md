@@ -1,10 +1,14 @@
-# Smart Bin HACS Integration
+<p align="center">
+  <img src="smartbin_ai.png" alt="SmartBin AI Logo" width="300"/>
+</p>
 
-A complete NFC-triggered, AI-powered smart bin inventory management system for Home Assistant.
+# SmartBin AI
+
+A complete NFC-triggered, AI-powered SmartBin inventory management system for Home Assistant.
 
 ## Features
 
-- **AI-Powered Image Analysis**: Automatically identify items in your smart bins using vision AI
+- **AI-Powered Image Analysis**: Automatically identify items in your SmartBins using vision AI
 - **NFC Tag Integration**: Tap NFC tags on bins to launch photo upload interface
 - **Mobile-Friendly**: iOS-optimized camera interface for easy photo uploads
 - **Inventory Management**: Track items, quantities, and conditions automatically
@@ -17,16 +21,16 @@ A complete NFC-triggered, AI-powered smart bin inventory management system for H
 ### Via HACS (Recommended)
 
 1. Go to HACS → Integrations → Browse
-2. Search for "Smart Bin HA"
+2. Search for "SmartBin AI"
 3. Click "Download"
 4. Restart Home Assistant
 
 ### Manual Installation
 
-1. Copy the `custom_components/smartbin_ai_upload` directory to your Home Assistant `custom_components` folder
+1. Copy the `custom_components/smartbin_ai` directory to your Home Assistant `custom_components` folder
 2. Restart Home Assistant
 3. Go to Settings → Devices & Services → Add Integration
-4. Search for "Smart Bin Upload"
+4. Search for "SmartBin AI"
 5. Enter your Z.AI API key (get one from https://z.ai)
 
 ## Configuration
@@ -39,9 +43,9 @@ You'll need a Z.AI API key for image analysis:
 2. Sign up and get an API key
 3. Enter the API key during integration setup
 
-### Adding Smart Bins
+### Adding SmartBins
 
-The integration creates 5 default bins (smartbin_ai_001 through smartbin_ai_005). To add more:
+The integration creates 5 default bins (smartbin_001 through smartbin_005). To add more:
 
 1. Create entities in Home Assistant UI (see Entities section below)
 2. Create folder: `/config/www/bins/bin_XXX/` where XXX is your bin number
@@ -52,10 +56,10 @@ The integration creates 5 default bins (smartbin_ai_001 through smartbin_ai_005)
 For each bin, create an NFC tag with this URL format:
 
 ```
-homeassistant://navigate/smartbin_ai_upload/launch?bin=smartbin_ai_001
+homeassistant://navigate/smartbin_ai/launch?bin=smartbin_001
 ```
 
-Replace `smartbin_ai_001` with your actual bin ID.
+Replace `smartbin_001` with your actual bin ID.
 
 For iOS Beta/Dev apps:
 - Beta: `homeassistant-beta://navigate/...`
@@ -65,7 +69,7 @@ For iOS Beta/Dev apps:
 
 ### Adding Items to a Bin
 
-1. Tap NFC tag on smart bin
+1. Tap NFC tag on SmartBin
 2. Tap "TAKE PHOTO" in the upload interface
 3. Take or select a photo from your phone
 4. Image uploads automatically and AI analysis begins
@@ -73,7 +77,7 @@ For iOS Beta/Dev apps:
 
 ### Viewing Inventory
 
-1. Go to Smart Bin Dashboard (add as webpage dashboard in HA)
+1. Go to SmartBin AI Dashboard (add as webpage dashboard in HA)
 2. Select a bin to view its contents
 3. Click on item names to see highlighted bounding boxes in images
 
@@ -113,29 +117,25 @@ The integration provides these services:
 
 | Service | Description |
 |----------|-------------|
-| `smartbin_ai_upload.analyze_image` | Analyze an image with AI |
-| `smartbin_ai_upload.append_image` | Add image to bin list |
-| `smartbin_ai_upload.remove_item` | Remove item from inventory |
-| `smartbin_ai_upload.update_item` | Update existing item |
-| `smartbin_ai_upload.add_item` | Manually add item |
-| `smartbin_ai_upload.clear_inventory` | Remove all items |
-| `smartbin_ai_upload.search_items` | Search across all bins |
+| `smartbin_ai.analyze_image` | Analyze an image with AI |
+| `smartbin_ai.append_image` | Add image to bin list |
+| `smartbin_ai.remove_item` | Remove item from inventory |
+| `smartbin_ai.update_item` | Update existing item |
+| `smartbin_ai.add_item` | Manually add item |
+| `smartbin_ai.clear_inventory` | Remove all items |
+| `smartbin_ai.search_items` | Search across all bins |
 
 ## Dashboard Setup
 
-### Add Smart Bin Dashboard
+### Add SmartBin AI Dashboard
 
 1. Settings → Dashboards → Add Dashboard
 2. Select "Webpage"
-3. Enter `/local/custom_components/smartbin_ai_upload/frontend/smartbin_ai_dashboard_industrial.html`
-4. Name it "Smart Bins"
+3. Enter `/local/smartbin_ai_dashboard.html`
+4. Name it "SmartBin AI"
 
-### Alternative Themes
-
-Replace the URL with:
-- Industrial: `.../smartbin_ai_dashboard_industrial.html`
-- Warm: `.../smartbin_ai_dashboard_warm.html`
-- Tech: `.../smartbin_ai_dashboard_tech.html`
+Note: The integration copies its frontend files from `custom_components/smartbin_ai/frontend/` into `/config/www/`
+on startup, so they are served from `/local/` and remain fully HACS-packageable.
 
 ## Troubleshooting
 
@@ -143,7 +143,7 @@ Replace the URL with:
 
 Use the NFC tag deep link instead of direct URL:
 ```
-homeassistant://navigate/smartbin_ai_upload/launch?bin=smartbin_ai_001
+homeassistant://navigate/smartbin_ai/launch?bin=smartbin_ai_001
 ```
 
 ### iOS Camera Shows Blank Screen
@@ -169,7 +169,7 @@ This integration uses the native file picker, not WebView camera:
 ## Data Storage
 
 - Images stored in: `/config/www/bins/bin_XXX/`
-- Inventory data stored in: `/config/.storage/smartbin_ai_upload`
+- Inventory data stored in: `/config/.storage/smartbin_ai`
 - Analysis logs: `/config/ANALYSIS_DEBUG.log`
 
 ## License

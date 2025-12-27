@@ -6,9 +6,9 @@ analyze_image:
   fields:
     bin_id:
       name: Bin ID
-      description: Bin identifier (e.g., smartbin_001)
+      description: Bin identifier (e.g., smartbin_ai_001)
       required: true
-      example: "smartbin_001"
+      example: "smartbin_ai_001"
       selector:
         text:
     image_path:
@@ -22,19 +22,19 @@ analyze_image:
       name: Bin Name
       description: Friendly name for logging
       required: false
-      example: "Smart Bin 1"
+      example: "SmartBin 001"
       selector:
         text:
 
 append_image:
   name: Append Image
-  description: Add an image to bin's image list
+  description: Add an image to the bin's image list
   fields:
     bin_id:
       name: Bin ID
       description: Bin identifier
       required: true
-      example: "smartbin_001"
+      example: "smartbin_ai_001"
       selector:
         text:
     filename:
@@ -53,7 +53,7 @@ remove_item:
       name: Bin ID
       description: Bin identifier
       required: true
-      example: "smartbin_001"
+      example: "smartbin_ai_001"
       selector:
         text:
     item_name:
@@ -72,7 +72,7 @@ remove_image:
       name: Bin ID
       description: Bin identifier
       required: true
-      example: "smartbin_001"
+      example: "smartbin_ai_001"
       selector:
         text:
     filename:
@@ -91,19 +91,19 @@ update_item:
       name: Bin ID
       description: Bin identifier
       required: true
-      example: "smartbin_001"
+      example: "smartbin_ai_001"
       selector:
         text:
     item_name:
       name: Item Name
-      description: Current name of item
+      description: Current name of the item
       required: true
       example: "Screwdriver"
       selector:
         text:
     new_name:
       name: New Name
-      description: New name for item
+      description: New name for the item
       required: false
       example: "Phillips Screwdriver"
       selector:
@@ -137,12 +137,12 @@ add_item:
       name: Bin ID
       description: Bin identifier
       required: true
-      example: "smartbin_001"
+      example: "smartbin_ai_001"
       selector:
         text:
     item_name:
       name: Item Name
-      description: Name of item
+      description: Name of the item
       required: true
       example: "Screwdriver"
       selector:
@@ -178,7 +178,7 @@ clear_inventory:
       name: Bin ID
       description: Bin identifier
       required: true
-      example: "smartbin_001"
+      example: "smartbin_ai_001"
       selector:
         text:
 
@@ -190,7 +190,7 @@ clear_images:
       name: Bin ID
       description: Bin identifier
       required: true
-      example: "smartbin_001"
+      example: "smartbin_ai_001"
       selector:
         text:
 

@@ -41,26 +41,7 @@ This security audit was conducted before making the repository public. The proje
 - No physical addresses or personal details
 - GitHub repository references are appropriate for public repo
 
-### ⚠️ WARNING - Git Commit History Contains Email Addresses
-
-**Status:** NEEDS ATTENTION
-
-**Issue:** Git commit history contains potentially personal email addresses:
-- `claude3@dugh.uk`
-- `claude-main@dugh-os.com`
-
-**Impact:** Medium - Email addresses are exposed in git history
-
-**Recommendations:**
-1. **Option A (Recommended):** Accept these emails in history as-is (they're likely throwaway/automation emails)
-2. **Option B:** Rewrite git history to use generic email:
-   ```bash
-   git filter-branch --env-filter '
-   export GIT_AUTHOR_EMAIL="noreply@github.com"
-   export GIT_COMMITTER_EMAIL="noreply@github.com"
-   ' --tag-name-filter cat -- --branches --tags
-   ```
-3. **Option C:** Start with a fresh repository using `git init`
+2. **Option C:** Start with a fresh repository using `git init`
 
 ### ✅ SAFE - Proper .gitignore Configuration
 
@@ -70,7 +51,6 @@ Updated `.gitignore` now excludes:
 - Python artifacts (`__pycache__/`, `*.pyc`, etc.)
 - Environment files (`.env`, `.env.local`, etc.)
 - IDE files (`.vscode/`, `.idea/`, etc.)
-- Claude Code settings (`.claude/`)
 - Temporary documentation files
 - Temporary fix scripts
 - Secrets and certificates
