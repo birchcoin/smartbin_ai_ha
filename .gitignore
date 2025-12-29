@@ -46,6 +46,7 @@ README_REPO.md
 # Temporary fix scripts
 fix_syntax.py
 manual_fix.py
+update.sh
 
 # Environment variables (security)
 .env

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-label="SmartBin AI Scanning">
+  <defs>
+    <style>
+      .orange { fill: #ff6600; }
+      .dark   { fill: #3f444a; }
+      .white  { fill: #ffffff; }
+      .beam   { stroke: #ff6600; stroke-width: 6; opacity: 0.5; }
+      .text   { fill: #3f444a; font-family: Inter, Arial, sans-serif; font-weight: 600; }
+    </style>
+  </defs>
+
+  <!-- Scan Lines -->
+  <line x1="70" y1="200" x2="210" y2="230" class="beam"></line>
+  <line x1="70" y1="250" x2="210" y2="270" class="beam"></line>
+  <line x1="70" y1="300" x2="210" y2="310" class="beam"></line>
+
+  <!-- Camera -->
+  <circle cx="95" cy="260" r="24" class="dark"></circle>
+  <circle cx="95" cy="260" r="14" class="white"></circle>
+  <circle cx="95" cy="260" r="6" class="orange"></circle>
+
+  <!-- Bin (same geometry as primary logo) -->
+  <path class="orange" d="M140 115 L560 75 Q615 70 650 95 L685 120
+                           Q650 135 605 140 L175 175
+                           Q145 178 125 165 Q115 158 110 148
+                           Q115 125 140 115 Z"></path>
+
+  <path class="dark" d="M120 150 L710 150 L670 340
+                         Q664 368 636 368
+                         L200 368 Q172 368 158 342
+                         L120 150 Z"></path>
+
+  <path class="white" d="M210 168 L660 168 L645 225 L235 225 Z"></path>
+
+  <!-- AI -->
+  <path class="white" d="M240 332 L295 235 Q305 217 325 217 L395 217
+                         Q415 217 425 235 L480 332 Z"></path>
+  <rect class="white" x="520" y="217" width="85" height="143" rx="10"></rect>
+
+  <!-- Text -->
+  <text x="760" y="255" font-size="96" class="text">SmartBin</text>
+  <text x="760" y="330" font-size="64" class="text">AI</text>
+</svg>

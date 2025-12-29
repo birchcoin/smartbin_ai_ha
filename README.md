@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="smartbin_ai.png" alt="SmartBin AI Logo" width="300"/>
+  <img src="SmartBin_AI.svg" alt="SmartBin AI Logo" width="300"/>
 </p>
 
 # SmartBin AI
@@ -53,17 +53,65 @@ The integration creates 5 default bins (smartbin_001 through smartbin_005). To a
 
 ### NFC Tag Setup
 
-For each bin, create an NFC tag with this URL format:
+#### Easy Way: Use the Built-in NFC Tag Generator
 
+1. Open the SmartBin AI Dashboard
+2. Find your bin in the bins section
+3. Click the **"📱 NFC Tag"** button
+4. Follow the on-screen instructions for your device
+
+The dashboard will automatically:
+- Generate the correct URL for your bin
+- Show step-by-step instructions for iPhone or Android
+- Display a QR code for testing
+- Let you write the tag directly (Android) or copy the URL (iPhone)
+
+#### Manual Setup
+
+For each bin, write an NFC tag with a URL in this format:
+
+**For Upload (Add Items):**
 ```
-homeassistant://navigate/smartbin_ai/launch?bin=smartbin_001
+https://YOUR_HA_URL/smartbin_ai/launch?bin=smartbin_001
 ```
 
-Replace `smartbin_001` with your actual bin ID.
+**For Remove Items:**
+```
+https://YOUR_HA_URL/smartbin_ai/launch_remove?bin=smartbin_001
+```
 
-For iOS Beta/Dev apps:
-- Beta: `homeassistant-beta://navigate/...`
-- Dev: `homeassistant-dev://navigate/...`
+Replace:
+- `YOUR_HA_URL` with your Home Assistant URL (e.g., `homeassistant.local:8123` or `https://your-domain.com`)
+- `smartbin_001` with your actual bin ID (smartbin_001, smartbin_002, etc.)
+
+#### iPhone Users
+
+iPhones cannot write NFC tags from websites. Follow these steps:
+
+1. **Download a free NFC app** from the App Store:
+   - "NFC Tools" (Recommended)
+   - "NFC TagWriter by NXP"
+   - "GoToTags"
+
+2. **Get the URL** from the SmartBin AI dashboard:
+   - Click "📱 NFC Tag" button on your bin
+   - Click "📋 Copy URL" button
+
+3. **Write the tag** in your NFC app:
+   - Open the app → Tap "Write" → Select "URL"
+   - Paste the URL → Hold iPhone near NFC sticker
+   - Wait for confirmation
+
+4. **Test the tag**: Hold your iPhone near the tag - it should show a notification to open the URL
+
+#### Android Users
+
+Android users can write tags directly from the dashboard:
+1. Click "📱 NFC Tag" button on your bin
+2. Select mode (Add Items or Remove Items)
+3. Click "Write to NFC Tag"
+4. Hold your phone near a blank NFC sticker
+5. Done!
 
 ## Usage
 
@@ -139,12 +187,23 @@ on startup, so they are served from `/local/` and remain fully HACS-packageable.
 
 ## Troubleshooting
 
-### Upload Fails with "Not authenticated"
+### NFC Tag Not Working or 404 Error
 
-Use the NFC tag deep link instead of direct URL:
-```
-homeassistant://navigate/smartbin_ai/launch?bin=smartbin_ai_001
-```
+**iPhone Users:**
+1. Make sure you wrote the tag using an NFC app (not the website)
+2. Test the URL first by clicking "📋 Copy URL" and pasting it in Safari
+3. Verify the URL includes your Home Assistant address
+
+**All Users:**
+1. Check the tag has the correct URL format: `https://YOUR_HA_URL/smartbin_ai/launch?bin=smartbin_001`
+2. Test endpoints directly: Visit `/local/smartbin_ai_nfc_test.html`
+3. Verify the bin ID exists (smartbin_001, smartbin_002, etc.)
+4. Check Home Assistant logs for errors
+
+**iPhone Tag Reading Issues:**
+- Make sure NFC is enabled: Settings → General → NFC
+- Hold the top of your iPhone near the tag for 1-2 seconds
+- iOS 13 or later required for background NFC reading
 
 ### iOS Camera Shows Blank Screen
 

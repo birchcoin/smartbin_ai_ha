@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBin AI - NFC Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(ellipse at top, rgba(255, 102, 0, 0.15), transparent 50%),
+                        radial-gradient(ellipse at bottom right, rgba(255, 102, 0, 0.1), transparent 50%),
+                        rgba(3, 10, 26, 1);
+            color: #f4f6f9;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #ff6600;
+            font-family: "Times New Roman", Times, serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            text-align: center;
+        }
+        .subtitle {
+            color: #a4acba;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .section {
+            background: rgba(4, 18, 38, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 102, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.2);
+        }
+        h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #ff6600;
+            font-family: "Times New Roman", Times, serif;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .test-link {
+            display: block;
+            background: linear-gradient(135deg, #ff6600 0%, #ff8833 100%);
+            color: #ffffff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 12px;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4);
+        }
+        .test-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.6);
+        }
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #ffd2a6;
+        }
+        .nfc-format {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border-left: 3px solid #ff6600;
+        }
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            display: none;
+        }
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #9ef0c2;
+        }
+        .status.error {
+            background: rgba(212, 83, 69, 0.2);
+            border: 1px solid #d45345;
+            color: #ffb4aa;
+        }
+        .bin-select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            background: rgba(4, 18, 38, 0.8);
+            color: #f4f6f9;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        .info {
+            background: rgba(255, 102, 0, 0.1);
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NFC Tag Test Center</h1>
+        <p class="subtitle">Test and verify SmartBin AI NFC endpoints</p>
+
+        <div class="section">
+            <h2>Select Bin</h2>
+            <select class="bin-select" id="binSelect">
+                <option value="smartbin_001">SmartBin 001</option>
+                <option value="smartbin_002">SmartBin 002</option>
+                <option value="smartbin_003">SmartBin 003</option>
+                <option value="smartbin_004">SmartBin 004</option>
+                <option value="smartbin_005">SmartBin 005</option>
+            </select>
+        </div>
+
+        <div class="section">
+            <h2>Test Upload Launch</h2>
+            <div class="info">
+                This opens the photo upload interface for adding items to a bin.
+            </div>
+            <a href="#" class="test-link" id="testUpload">Test Upload Launcher</a>
+            <div class="nfc-format">
+                <strong>NFC Tag Format:</strong><br>
+                <code id="nfcUpload">homeassistant://navigate/smartbin_ai/launch?bin=smartbin_001</code>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Test Remove Launch</h2>
+            <div class="info">
+                This opens the photo interface for removing items from a bin.
+            </div>
+            <a href="#" class="test-link" id="testRemove">Test Remove Launcher</a>
+            <div class="nfc-format">
+                <strong>NFC Tag Format:</strong><br>
+                <code id="nfcRemove">homeassistant://navigate/smartbin_ai/launch_remove?bin=smartbin_001</code>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Test Dashboard</h2>
+            <div class="info">
+                This opens the SmartBin AI Command Center dashboard.
+            </div>
+            <a href="/local/smartbin_ai_dashboard.html" class="test-link">Test Dashboard</a>
+            <div class="nfc-format">
+                <strong>NFC Tag Format:</strong><br>
+                <code>homeassistant://navigate/smartbin_ai</code>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Direct HTTP Endpoints</h2>
+            <div class="info">
+                These are the actual HTTP URLs (for debugging only - use the navigate format above for NFC tags).
+            </div>
+            <a href="#" class="test-link" id="directUpload">Direct: /smartbin_ai/launch</a>
+            <a href="#" class="test-link" id="directRemove">Direct: /smartbin_ai/launch_remove</a>
+            <a href="/storage-bins/0" class="test-link">Direct: /storage-bins/0</a>
+        </div>
+
+        <div class="section">
+            <h2>Troubleshooting</h2>
+            <p style="margin-bottom: 12px;">If you get a 404 error:</p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>Ensure SmartBin AI integration is loaded in Home Assistant</li>
+                <li>Restart Home Assistant after making changes</li>
+                <li>Check that the bin ID exists (smartbin_001, smartbin_002, etc.)</li>
+                <li>For iOS, use the correct scheme:
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li><code>homeassistant://</code> for production</li>
+                        <li><code>homeassistant-beta://</code> for beta app</li>
+                        <li><code>homeassistant-dev://</code> for dev app</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const binSelect = document.getElementById('binSelect');
+        const testUpload = document.getElementById('testUpload');
+        const testRemove = document.getElementById('testRemove');
+        const directUpload = document.getElementById('directUpload');
+        const directRemove = document.getElementById('directRemove');
+        const nfcUpload = document.getElementById('nfcUpload');
+        const nfcRemove = document.getElementById('nfcRemove');
+
+        function updateLinks() {
+            const bin = binSelect.value;
+
+            // Update test links
+            testUpload.href = `/smartbin_ai/launch?bin=${bin}`;
+            testRemove.href = `/smartbin_ai/launch_remove?bin=${bin}`;
+            directUpload.href = `/smartbin_ai/launch?bin=${bin}`;
+            directRemove.href = `/smartbin_ai/launch_remove?bin=${bin}`;
+
+            // Update NFC format examples
+            nfcUpload.textContent = `homeassistant://navigate/smartbin_ai/launch?bin=${bin}`;
+            nfcRemove.textContent = `homeassistant://navigate/smartbin_ai/launch_remove?bin=${bin}`;
+        }
+
+        binSelect.addEventListener('change', updateLinks);
+        updateLinks();
+    </script>
+</body>
+</html>

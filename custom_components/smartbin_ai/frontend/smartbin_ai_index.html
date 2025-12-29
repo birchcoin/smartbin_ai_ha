@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBin AI - Bins</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(ellipse at top, rgba(255, 102, 0, 0.15), transparent 50%),
+                        radial-gradient(ellipse at bottom right, rgba(255, 102, 0, 0.1), transparent 50%),
+                        rgba(3, 10, 26, 1);
+            color: #f4f6f9;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #ff6600;
+            font-family: "Times New Roman", Times, serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+        .subtitle {
+            color: #a4acba;
+            margin-bottom: 40px;
+        }
+        .bin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .bin-card {
+            background: rgba(4, 18, 38, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(255, 102, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.2);
+        }
+        .bin-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(255, 102, 0, 0.5);
+            border-color: #ff6600;
+        }
+        .bin-card h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #ff6600;
+            font-family: "Times New Roman", Times, serif;
+            font-weight: 700;
+        }
+        .bin-card p {
+            color: #a4acba;
+            font-size: 14px;
+        }
+        .bin-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="SmartBin_AI.svg" alt="SmartBin AI" style="max-width: 200px; height: auto;">
+        </div>
+        <h1>SmartBin AI</h1>
+        <p class="subtitle">Select a bin to manage inventory</p>
+
+        <div class="bin-grid" id="binGrid">
+            <div class="bin-card">
+                <h2>Loading bins...</h2>
+            </div>
+        </div>
+        <p class="subtitle" style="margin-top: 24px;">
+            Need to add or remove bins? Open the full dashboard in Home Assistant.
+        </p>
+    </div>
+
+    <script>
+        function getAuthToken() {
+            try {
+                const tokens = localStorage.getItem("hassTokens");
+                if (tokens) {
+                    return JSON.parse(tokens).access_token;
+                }
+            } catch (error) {
+                console.warn("Storage token read failed", error);
+            }
+            return null;
+        }
+
+        function getAuthTokenFromHassContext(root) {
+            try {
+                const hass = root?.hass || root?.document?.querySelector("home-assistant")?.hass;
+                return hass?.auth?.accessToken || null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        const authToken =
+            getAuthToken() ||
+            getAuthTokenFromHassContext(window) ||
+            getAuthTokenFromHassContext(window.parent);
+
+        function selectBin(binId) {
+            // Navigate to the dashboard page for the selected bin
+            window.location.href = `/local/smartbin_ai_dashboard.html?bin=${binId}`;
+        }
+
+        function renderBins(bins) {
+            const grid = document.getElementById("binGrid");
+            if (!grid) {
+                return;
+            }
+            const ids = Object.keys(bins || {});
+            if (!ids.length) {
+                grid.innerHTML = `
+                    <div class="bin-card">
+                        <h2>No bins found</h2>
+                        <p>Open the dashboard to add a bin.</p>
+                    </div>
+                `;
+                return;
+            }
+            grid.innerHTML = ids.map((binId) => {
+                const name = bins[binId]?.name || binId;
+                return `
+                    <div class="bin-card" onclick="selectBin('${binId}')">
+                        <div class="bin-icon"><img src="SmartBin_AI.svg" alt="SmartBin" style="width: 60px; height: 60px; object-fit: contain;"></div>
+                        <h2>${escapeHtml(name)}</h2>
+                        <p>Click to manage inventory</p>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        async function loadBins() {
+            const grid = document.getElementById("binGrid");
+            if (!authToken) {
+                if (grid) {
+                    grid.innerHTML = `
+                        <div class="bin-card">
+                            <h2>Authentication required</h2>
+                            <p>Open this panel from inside Home Assistant.</p>
+                        </div>
+                    `;
+                }
+                return;
+            }
+            try {
+                const response = await fetch("/api/smartbin_ai/config", {
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to load bins");
+                }
+                const data = await response.json();
+                renderBins(data.bins || {});
+            } catch (error) {
+                if (grid) {
+                    grid.innerHTML = `
+                        <div class="bin-card">
+                            <h2>Unable to load bins</h2>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        loadBins();
+    </script>
+</body>
+</html>

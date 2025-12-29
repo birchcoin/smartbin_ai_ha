@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SmartBin AI Scan Icon">
+  <defs>
+    <style>
+      .orange { fill: #ff6600; }
+      .dark   { fill: #3f444a; }
+      .white  { fill: #ffffff; }
+      .beam   { fill: #ff6600; opacity: 0.25; }
+    </style>
+  </defs>
+
+  <!-- Scan Beam -->
+  <polygon class="beam" points="40,120 260,220 260,340 40,420"></polygon>
+
+  <!-- Camera Lens -->
+  <circle cx="120" cy="270" r="42" class="dark"></circle>
+  <circle cx="120" cy="270" r="26" class="white"></circle>
+  <circle cx="120" cy="270" r="12" class="orange"></circle>
+
+  <!-- Lid -->
+  <path class="orange" d="M140 145 L360 115 Q400 112 425 130 L450 150
+                           Q420 165 385 170 L115 200
+                           Q95 202 82 192 Q75 185 72 175
+                           Q76 155 90 145 Z"></path>
+
+  <!-- Bin -->
+  <path class="dark" d="M80 175 L460 175 L430 400
+                         Q425 420 405 420
+                         L135 420 Q115 420 105 402
+                         L80 175 Z"></path>
+
+  <!-- Rim -->
+  <path class="white" d="M135 190 L420 190 L410 240 L150 240 Z"></path>
+
+  <!-- A -->
+  <path class="white" d="M150 390 L185 270 Q192 255 210 255 L265 255
+                         Q283 255 290 270 L325 390
+                         Q330 405 320 412 Q315 416 308 416
+                         L285 416 Q275 416 270 406
+                         L262 382 L213 382 L205 406
+                         Q200 416 190 416 L167 416
+                         Q158 416 152 412 Q142 405 150 390 Z"></path>
+
+  <!-- I -->
+  <rect class="white" x="340" y="255" width="50" height="160" rx="8"></rect>
+</svg>
