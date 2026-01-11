@@ -47,6 +47,9 @@ README_REPO.md
 fix_syntax.py
 manual_fix.py
 update.sh
+easy-save.sh
+easy-update.sh
+easy-undo.sh
 
 # Environment variables (security)
 .env
