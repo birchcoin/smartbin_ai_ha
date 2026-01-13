@@ -899,16 +899,38 @@
                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
     const modalHtml = `
-      <div class="modal-overlay" id="nfcModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 10000;">
-        <div class="nfc-modal-content" style="background: var(--panel); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 600px; width: 90%; box-shadow: var(--shadow), 0 0 60px rgba(255, 102, 0, 0.2);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-            <h2 style="margin: 0; color: var(--accent); font-family: var(--font-display); text-transform: uppercase; letter-spacing: -0.02em;">NFC Tag Generator</h2>
+      <div class="modal-overlay" id="nfcModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 16px;">
+        <div class="nfc-modal-content" style="background: var(--panel); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 20px; padding: 24px; max-width: 600px; width: 100%; max-height: calc(100vh - 32px); overflow-y: auto; box-shadow: var(--shadow), 0 0 60px rgba(255, 102, 0, 0.2);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; position: sticky; top: 0; background: var(--panel); z-index: 1; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+            <div>
+              <h2 style="margin: 0; color: var(--accent); font-family: var(--font-display); text-transform: uppercase; letter-spacing: -0.02em; font-size: 18px;">NFC Tag Generator</h2>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 4px;">v3.7</div>
+            </div>
             <button class="btn ghost small" onclick="document.getElementById('nfcModal').remove()" style="font-size: 24px; padding: 4px 12px;">×</button>
           </div>
 
           <div style="margin-bottom: 24px;">
             <div style="font-size: 14px; color: var(--muted); margin-bottom: 16px;">
               <strong style="color: var(--text);">Bin:</strong> ${escapeHtml(binName(binId))} (${escapeHtml(binId)})
+            </div>
+
+            <!-- COPY URL BUTTON - First, most prominent -->
+            <div style="background: rgba(0, 0, 0, 0.3); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+              <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 8px;">URL TO WRITE TO NFC TAG</div>
+              <div id="nfcUrlDisplay" style="font-family: monospace; font-size: 13px; color: var(--accent-2); word-break: break-all; margin-bottom: 12px;">${escapeHtml(uploadUrl)}</div>
+              <button class="btn ghost small" onclick="copyNFCUrl()" style="width: 100%; padding: 14px; font-size: 15px; font-weight: 700;">📋 Copy URL</button>
+            </div>
+
+            <!-- QR CODE - Second -->
+            <div style="text-align: center; margin-bottom: 20px;">
+              <div style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 12px;">📱 ${isIOS ? 'Scan to Test' : 'Scan QR Code'}</div>
+              <div id="qrcodeContainer" style="display: inline-block; padding: 16px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"></div>
+              <div style="font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.6;">
+                ${isIOS ?
+                  'Scan with iPhone camera to test the URL' :
+                  'Scan with your phone\'s camera to open'
+                }
+              </div>
             </div>
 
             <div style="margin-bottom: 16px;">
@@ -923,23 +945,24 @@
               </div>
             </div>
 
-            <div style="background: rgba(0, 0, 0, 0.3); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
-              <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 8px;">URL TO WRITE</div>
-              <div id="nfcUrlDisplay" style="font-family: monospace; font-size: 13px; color: var(--accent-2); word-break: break-all;">${escapeHtml(uploadUrl)}</div>
-              <button class="btn ghost small" onclick="copyNFCUrl()" style="margin-top: 12px; width: 100%;">📋 Copy URL</button>
-            </div>
-
             ${isIOS ? `
-              <div style="background: rgba(255, 143, 43, 0.15); border: 2px solid var(--accent); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                <div style="display: flex; align-items: start; gap: 12px; margin-bottom: 16px;">
-                  <div style="font-size: 32px;">📱</div>
-                  <div>
-                    <div style="font-weight: 700; font-size: 16px; color: var(--accent); margin-bottom: 8px; font-family: var(--font-display); text-transform: uppercase;">iPhone Users: Follow These Steps</div>
-                    <div style="font-size: 14px; color: var(--text); line-height: 1.6;">
-                      Apple doesn't allow websites to write NFC tags. You'll need a free app from the App Store.
+              <div style="background: rgba(255, 143, 43, 0.15); border: 2px solid var(--accent); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+                <button onclick="toggleNFCInstructions()" style="width: 100%; background: none; border: none; padding: 0; cursor: pointer; text-align: left;">
+                  <div style="display: flex; align-items: center; gap: 12px; justify-content: space-between;">
+                    <div style="display: flex; align-items: start; gap: 12px;">
+                      <div style="font-size: 32px;">📱</div>
+                      <div>
+                        <div style="font-weight: 700; font-size: 16px; color: var(--accent); margin-bottom: 4px; font-family: var(--font-display); text-transform: uppercase;">iPhone Setup Instructions</div>
+                        <div style="font-size: 13px; color: var(--text); line-height: 1.5;">
+                          Tap to view step-by-step guide
+                        </div>
+                      </div>
                     </div>
+                    <div id="instructionsToggle" style="font-size: 24px; color: var(--accent);">▼</div>
                   </div>
-                </div>
+                </button>
+
+                <div id="nfcInstructions" style="display: none; margin-top: 16px;">
 
                 <div style="background: rgba(0, 0, 0, 0.3); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
                   <div style="font-weight: 700; margin-bottom: 12px; color: var(--accent-2); font-size: 14px;">📲 STEP 1: Download a FREE NFC App</div>
@@ -975,6 +998,8 @@
                 <div style="background: rgba(76, 175, 80, 0.15); border: 1px solid #4caf50; padding: 12px; border-radius: 8px; font-size: 13px; color: #9ef0c2;">
                   <strong>💡 Tip:</strong> Test the tag by holding your iPhone near it. Your phone should show a notification to open the URL.
                 </div>
+
+                </div>
               </div>
             ` : nfcSupported ? `
               <button class="btn" id="writeNFCBtn" onclick="writeNFCTag()" style="width: 100%; padding: 16px; font-size: 16px; margin-bottom: 16px;">
@@ -983,20 +1008,9 @@
               <div id="nfcStatus" style="padding: 12px; border-radius: 8px; display: none; margin-bottom: 16px; text-align: center;"></div>
             ` : `
               <div style="background: rgba(212, 83, 69, 0.2); border: 1px solid var(--danger); padding: 16px; border-radius: 12px; margin-bottom: 16px; font-size: 14px;">
-                ⚠️ NFC writing not supported in this browser. Use Chrome on Android or follow the instructions below.
+                ⚠️ NFC writing not supported in this browser. Use Chrome on Android or follow the instructions above.
               </div>
             `}
-
-            <div style="text-align: center;">
-              <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 12px;">${isIOS ? 'OPTIONAL: TEST WITH QR CODE' : 'SCAN QR CODE'}</div>
-              <div id="qrcodeContainer" style="display: inline-block; padding: 16px; background: white; border-radius: 12px;"></div>
-              <div style="font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.6;">
-                ${isIOS ?
-                  'Scan this QR code with your iPhone camera to test the URL before writing it to your NFC tag.' :
-                  'Scan with your phone\'s camera to open the URL'
-                }
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -1004,8 +1018,39 @@
 
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-    // Generate QR code
-    generateQRCode(uploadUrl);
+    // Explicitly ensure instructions are collapsed and QR is visible (defensive coding)
+    setTimeout(() => {
+      const instructionsEl = document.getElementById('nfcInstructions');
+      const toggleEl = document.getElementById('instructionsToggle');
+      const qrContainer = document.getElementById('qrcodeContainer');
+
+      // Generate QR code after DOM is ready
+      if (debugEnabled) console.log('Generating QR code for:', uploadUrl);
+      generateQRCode(uploadUrl);
+
+      // Force instructions to be collapsed
+      if (instructionsEl) {
+        instructionsEl.style.display = 'none';
+        if (debugEnabled) console.log('NFC Modal: Instructions collapsed');
+      }
+      if (toggleEl) {
+        toggleEl.textContent = '▼';
+      }
+
+      // Ensure QR code is visible
+      if (qrContainer) {
+        qrContainer.style.display = 'inline-block';
+        qrContainer.style.visibility = 'visible';
+        if (debugEnabled) console.log('NFC Modal: QR code container visible');
+      }
+
+      // Scroll modal content to top to ensure QR code is in view
+      const modalContent = document.querySelector('.nfc-modal-content');
+      if (modalContent) {
+        modalContent.scrollTop = 0;
+        if (debugEnabled) console.log('NFC Modal: Scrolled to top');
+      }
+    }, 100);
 
     // Store URLs for mode switching
     window.nfcModalState = {
@@ -1050,14 +1095,54 @@
 
   function generateQRCode(url) {
     const container = document.getElementById('qrcodeContainer');
-    if (!container) return;
+    if (!container) {
+      console.error('QR code container not found');
+      return;
+    }
 
-    container.innerHTML = '';
+    // Show loading indicator
+    container.innerHTML = `
+      <div style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 14px;">
+        Loading QR code...
+      </div>
+    `;
 
-    // Use a simple QR code generation approach
-    // For production, you might want to include a QR library
+    // Use QR code API with error handling
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
-    container.innerHTML = `<img src="${qrApiUrl}" alt="QR Code" style="display: block; width: 200px; height: 200px;">`;
+    console.log('QR API URL:', qrApiUrl);
+
+    const img = document.createElement('img');
+    img.src = qrApiUrl;
+    img.alt = 'QR Code';
+    img.style.display = 'block';
+    img.style.width = '200px';
+    img.style.height = '200px';
+
+    img.onerror = function() {
+      console.error('QR code image failed to load from API');
+      // Fallback: show URL as text if image fails
+      container.innerHTML = `
+        <div style="padding: 20px; background: #fff; color: #000; text-align: center; font-size: 12px; word-break: break-all;">
+          <div style="margin-bottom: 10px; font-weight: bold; color: #d00;">⚠️ QR Code Failed to Load</div>
+          <div style="font-size: 10px; margin-bottom: 8px;">Use the Copy URL button instead</div>
+          <div style="font-family: monospace; font-size: 10px;">${escapeHtml(url)}</div>
+        </div>
+      `;
+    };
+
+    img.onload = function() {
+      console.log('QR code loaded successfully');
+      container.innerHTML = '';
+      container.appendChild(img);
+    };
+
+    // Set a timeout to replace loading text if image takes too long
+    setTimeout(() => {
+      if (container.innerHTML.includes('Loading')) {
+        container.innerHTML = '';
+        container.appendChild(img);
+      }
+    }, 3000);
   }
 
   async function writeNFCTag() {
@@ -1145,9 +1230,25 @@
     });
   }
 
+  function toggleNFCInstructions() {
+    const instructionsEl = document.getElementById('nfcInstructions');
+    const toggleEl = document.getElementById('instructionsToggle');
+
+    if (!instructionsEl || !toggleEl) return;
+
+    if (instructionsEl.style.display === 'none') {
+      instructionsEl.style.display = 'block';
+      toggleEl.textContent = '▲';
+    } else {
+      instructionsEl.style.display = 'none';
+      toggleEl.textContent = '▼';
+    }
+  }
+
   // Make functions available globally for onclick handlers
   window.selectNFCMode = selectNFCMode;
   window.writeNFCTag = writeNFCTag;
+  window.toggleNFCInstructions = toggleNFCInstructions;
   window.copyNFCUrl = copyNFCUrl;
 
   function bindEvents() {

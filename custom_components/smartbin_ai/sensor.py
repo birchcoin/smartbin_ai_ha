@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import copy
+
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -40,7 +42,7 @@ class SmartBinDataSensor(SensorEntity):
     def extra_state_attributes(self):
         entry = self._entry()
         images = list(entry.get("images", []))
-        inventory = entry.get("inventory", {"items": []})
+        inventory = copy.deepcopy(entry.get("inventory", {"items": []}))
         history = list(entry.get("history", []))
         analysis_status = entry.get("analysis_status")
         folder_id = self._bin_id.replace("smartbin_", "")
